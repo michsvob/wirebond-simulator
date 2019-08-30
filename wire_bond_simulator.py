@@ -1,5 +1,6 @@
 from string import Template
 import time
+import math
 
 #https://docs.python.org/3/library/string.html#format-string-syntax
 t=Template(""" 
@@ -126,6 +127,63 @@ Nachlauf: $desc_nachlauf µm <br>
 </main> <footer> Michal Svoboda, $today</footer> </body> </html>
 
 """)
+
+
+class Bondhead:
+    def __init__(self, x_init,y_init,z_init):
+        self.x = x_init
+        self.y = y_init
+        self.z = z_init
+
+    def move_xyz(self, x_offs, y_offs, z_offs):
+        """
+        execute movement in cartesian coordinates
+
+        :param x_offs: x offset
+        :param y_offs: y offset
+        :param z_offs: z offset
+        """
+        self.x += x_offs
+        self.y += y_offs
+        self.z += z_offs
+
+    def move_polar(self, rho, theta1=0,theta2=0):
+        """
+        execute polar movement
+
+        :param rho: absolute distance
+        :param theta1: angle in vertical plane in degree, 0 =movement along +x axis, pi = movement along +z axis
+        :param theta2: angle in horizontal plane in degree, 0 = movement along +x axis, pi = movement along +y axis
+        """
+        assert isinstance(theta1, float)
+        assert isinstance(theta2, float)
+        assert isinstance(rho, float)
+        self.x += rho * math.cos(theta1)*math.cos(theta2)
+        self.y += rho * math.sin(theta1)*math.cos(theta2)
+        self.z += rho * math.sin(theta1)
+
+
+class Bondtool(Bondhead):
+    """
+    Describes Bondtool.
+
+    Arguments:
+       foot_size -- foot length in micrometers
+        angle -- angle in degrees
+        front_radius -- front radius in degrees
+        back_radius -- back radius in degrees
+    """
+
+    def __init__(self,foot_size, angle, front_radius, back_radius, x_init,y_init,z_init):
+        self.foot_size = foot_size
+        self.angle = angle
+        self.front_radius = front_radius
+        self.back_radius = back_radius
+        self.x = x_init
+        self.y = y_init
+        self.z = z_init
+
+
 
 x0=-100
 tail=900
